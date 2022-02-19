@@ -4,7 +4,7 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url">jdbc:mysql://localhost:3306/testhibernate?useSSL=false</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/testhibernate?useSSL=false&amp; serverTimezone = UTC</property>
     <property name="connection.username">root</property>
     <property name="connection.password">root</property>
 
@@ -16,7 +16,9 @@
 
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    <!-- DB schema will be updated if needed -->
-    <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
+
+    <mapping class="com.colossus.training.hibernate.Entity.Author"/>
+    <mapping class="com.colossus.training.hibernate.Entity.Book"/>
+
   </session-factory>
 </hibernate-configuration>
