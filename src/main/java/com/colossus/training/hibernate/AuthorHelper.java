@@ -11,6 +11,9 @@ import org.hibernate.SessionFactory;
 import java.util.List;
 
 public class AuthorHelper {
+
+
+
     private SessionFactory sessionFactory;
 
     public AuthorHelper() {
@@ -42,5 +45,51 @@ public class AuthorHelper {
         session.close();
 
         return authorList;
+    }
+
+    public Author addAuthor(Author author){
+
+        Session session = sessionFactory.openSession();
+
+        session.beginTransaction();
+
+        session.save(author);
+
+        session.getTransaction().commit();
+
+        session.close();
+
+        return author;
+    }
+
+    public void addAuthors(int number){
+        Session session = sessionFactory.openSession();
+
+
+
+        session.beginTransaction();
+
+        //flush and circle
+        StringBuilder fName = new StringBuilder("Alex");
+        StringBuilder sName = new StringBuilder("Pushkin");
+
+        for (int i = 1; i <= number; i++) {
+            char travelling = fName.charAt(0);
+            fName.deleteCharAt(0);
+            fName.append(travelling);
+
+            travelling = sName.charAt(0);
+            sName.deleteCharAt(0);
+            sName.append(travelling);
+
+            if (i % 10 == 0) session.flush();
+
+            session.save(new Author(fName.toString(),sName.toString()));
+        }
+
+        session.getTransaction().commit();
+
+        session.close();
+
     }
 }

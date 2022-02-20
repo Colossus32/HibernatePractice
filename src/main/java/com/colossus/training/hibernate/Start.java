@@ -1,15 +1,13 @@
 package com.colossus.training.hibernate;
 
-import com.colossus.training.hibernate.Entity.Book;
-import org.hibernate.Session;
+import java.util.logging.Logger;
 
 public class Start {
-    public static void main(String[] args) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
 
-        for (Book book: new BookHelpper().getBookList()
-             ) {
-            System.out.println("book " + book.getName());
-        }
+    private static final Logger LOG = Logger.getLogger(AuthorHelper.class.getName());
+
+    public static void main(String[] args) {
+
+        new AuthorHelper().addAuthors(30);
     }
 }
