@@ -2,17 +2,13 @@ package com.colossus.training.hibernate;
 
 import com.colossus.training.hibernate.Entity.Author;
 import jakarta.persistence.Query;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
 public class AuthorHelper {
-
-
 
     private SessionFactory sessionFactory;
 
@@ -25,7 +21,7 @@ public class AuthorHelper {
         // open session for manipulating persistence objects
         Session session = sessionFactory.openSession();
 
-        session.get(Author.class, 1L);
+        //session.get(Author.class, 1L);
 
         //prepare request
         //object constructor for Criteria API requests
@@ -35,10 +31,16 @@ public class AuthorHelper {
 
         Root<Author> root = cq.from(Author.class); // первостепенный корневой entity (в sql запросе from)
 
-        cq.select(root); // optional operator if you just want to get all values
+        Selection[] selection = {root.get("id"), root.get("name")}; // выборка полей из таблицы, если нужны конкретные
+
+        ParameterExpression<String> nameParam = cb.parameter(String.class, "name");
+
+        cq.select(cb.construct(Author.class ,selection))
+                .where(cb.like(root.get("name"), nameParam));
 
         //here is the request
         Query query = session.createQuery(cq);
+        query.setParameter("name", "%е%");
 
         List<Author> authorList = query.getResultList();
 
@@ -53,7 +55,7 @@ public class AuthorHelper {
 
         session.beginTransaction();
 
-        session.save(author);
+        session.persist(author);
 
         session.getTransaction().commit();
 
@@ -64,8 +66,6 @@ public class AuthorHelper {
 
     public void addAuthors(int number){
         Session session = sessionFactory.openSession();
-
-
 
         session.beginTransaction();
 
@@ -84,7 +84,7 @@ public class AuthorHelper {
 
             if (i % 10 == 0) session.flush();
 
-            session.save(new Author(fName.toString(),sName.toString()));
+            session.persist(new Author(fName.toString(), sName.toString()));
         }
 
         session.getTransaction().commit();
@@ -92,4 +92,26 @@ public class AuthorHelper {
         session.close();
 
     }
+
+    public void deleteAuthor(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaDelete<Author> criteriaDelete = cb.createCriteriaDelete(Author.class);
+        Root<Author> root = criteriaDelete.from(Author.class);
+        ParameterExpression<String> parameterExpression = cb.parameter(String.class, "name");
+
+        criteriaDelete.where(cb.like(root.get("name"), parameterExpression));
+
+        Query query = session.createQuery(criteriaDelete);
+
+        query.setParameter("name", "%е%");
+
+        query.executeUpdate();
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
 }

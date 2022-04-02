@@ -17,6 +17,9 @@
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
 
+    <property name="generate_statistics">true</property>
+    <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
+
     <mapping class="com.colossus.training.hibernate.Entity.Author"/>
     <mapping class="com.colossus.training.hibernate.Entity.Book"/>
 

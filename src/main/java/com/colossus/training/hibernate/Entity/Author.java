@@ -1,11 +1,12 @@
 package com.colossus.training.hibernate.Entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,19 +14,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
-@DynamicInsert
-@DynamicUpdate
-public class Author implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //генерация id в mysql через autoincrement
-    private long id;
+public class Author extends BaseEntity {
 
-    @NonNull
-    private String name;
-
-    @NonNull
     @Column(name = "second_name")
     private String second_name;
+
+    @OneToMany(targetEntity = Book.class,mappedBy = "author")
+    private List<Book> books = new ArrayList<>();
 
 }
