@@ -5,6 +5,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
 
 import java.util.List;
 
@@ -12,8 +13,13 @@ public class AuthorHelper {
 
     private SessionFactory sessionFactory;
 
+    private static Statistics stat;
+
     public AuthorHelper() {
         sessionFactory = HibernateUtil.getSessionFactory();
+        stat = sessionFactory.getStatistics();
+        stat.clear();
+        stat.setStatisticsEnabled(true);
     }
 
     public List<Author> getAuthorList(){
@@ -112,6 +118,22 @@ public class AuthorHelper {
 
         session.getTransaction().commit();
         session.close();
+    }
+
+    public Author getAuthor(long id){
+        Session session = sessionFactory.openSession();
+        Author author = session.get(Author.class, id);
+
+        printStatistics();
+
+        return author;
+    }
+
+    public static void printStatistics(){
+        System.out.println("Requires to DB: " + stat.getQueryExecutionCount());
+        System.out.println("Found in cache: " + stat.getSecondLevelCacheHitCount());
+        System.out.println("Added to cache: " + stat.getSecondLevelCachePutCount());
+        stat.clear();
     }
 
 }
