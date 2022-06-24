@@ -1,3 +1,3 @@
 # HibernatePractice
 
-just hibernate, criteria and graddle practice
+just hibernate, criteria and gradle practice
