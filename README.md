@@ -1,3 +1,3 @@
 # HibernatePractice
 
-just hibernate and   practice
+just hibernate, criteria and graddle practice
